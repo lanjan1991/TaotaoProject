@@ -73,4 +73,26 @@ public class ContentCategoryServiceImpl implements ContentCategoryService {
 		return TaotaoResult.ok(contentCategory);
 	}
 
+	@Override
+	public TaotaoResult deleteContentCategory(long id) {
+		TbContentCategoryExample example = new TbContentCategoryExample();
+		Criteria criteria = example.createCriteria();
+		criteria.andIdEqualTo(id);
+		TbContentCategory contentCategory = contentCategoryMapper.selectByExample(example).get(0);
+		//删除id对应的记录
+		contentCategoryMapper.deleteByExample(example);
+		//断parentid对应的记录下是否有子节点
+		TbContentCategoryExample example2 = new TbContentCategoryExample();
+		Criteria criteria2 = example2.createCriteria();
+		criteria2.andParentIdEqualTo(contentCategory.getParentId());
+		List<TbContentCategory> list = contentCategoryMapper.selectByExample(example2);
+		if(list.size() == 0){
+			TbContentCategory parentCat = contentCategoryMapper.selectByPrimaryKey(contentCategory.getParentId());
+			parentCat.setIsParent(false);
+			//更新父节点
+			contentCategoryMapper.updateByPrimaryKey(parentCat);
+		}
+		return TaotaoResult.ok();
+	}
+
 }
