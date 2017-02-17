@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.taotao.portal.service.ContentService;
+import com.taotao.result.TaotaoResult;
 
 @Controller
 public class IndexController {
@@ -25,7 +26,9 @@ public class IndexController {
 	
 	@RequestMapping(value="/httpclient/post", method=RequestMethod.POST)
 	@ResponseBody
-	public String testPost(String username, String password){
-		return "username:" + username + "\tpassword:" + password;
+	public TaotaoResult testPost(String username, String password){
+		String result = "username:" + username + "\tpassword:" + password;
+		System.out.println(result);
+		return TaotaoResult.ok();
 	}
 }
