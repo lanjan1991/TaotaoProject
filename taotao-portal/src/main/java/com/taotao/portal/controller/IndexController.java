@@ -1,6 +1,7 @@
 package com.taotao.portal.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,5 +31,13 @@ public class IndexController {
 		String result = "username:" + username + "\tpassword:" + password;
 		System.out.println(result);
 		return TaotaoResult.ok();
+	}
+	
+	@RequestMapping(value="/httpclient/post2", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE+";charset=utf-8")
+	@ResponseBody
+	public String testPost2(String username, String password){
+		String result = "username:" + username + "\tpassword:" + password;
+		System.out.println(result);
+		return result;
 	}
 }
