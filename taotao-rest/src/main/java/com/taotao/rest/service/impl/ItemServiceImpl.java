@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.taotao.common.utils.JsonUtils;
+import com.taotao.mapper.TbItemDescMapper;
 import com.taotao.mapper.TbItemMapper;
 import com.taotao.pojo.TbItem;
+import com.taotao.pojo.TbItemDesc;
 import com.taotao.rest.dao.JedisClient;
 import com.taotao.rest.service.ItemService;
 import com.taotao.result.TaotaoResult;
@@ -24,6 +26,9 @@ public class ItemServiceImpl implements ItemService {
 	private TbItemMapper itemMapper;
 	
 	@Autowired
+	private TbItemDescMapper itemDescMapper;
+	
+	@Autowired
 	private JedisClient jedisClient;
 	
 	@Value("${REDIS_ITEM_KEY}")
@@ -32,6 +37,9 @@ public class ItemServiceImpl implements ItemService {
 	@Value("${REDIS_ITEM_EXPIRE}")
 	private Integer REDIS_ITEM_EXPIRE;
 
+	/*
+	 * 取商品基本信息
+	 */
 	@Override
 	public TaotaoResult getItemBaseInfo(long itemId) {
 		try {
@@ -61,6 +69,40 @@ public class ItemServiceImpl implements ItemService {
 			e.printStackTrace();
 		}
 		return TaotaoResult.ok(item);
+	}
+
+	/**
+	 * 取商品描述信息
+	 */
+	@Override
+	public TaotaoResult getItemDesc(long itemId) {
+		//添加缓存
+		try {
+			//添加缓存逻辑
+			//从缓存中取商品信息，商品id对应的信息
+			String json = jedisClient.get(REDIS_ITEM_KEY + ":" + itemId + ":desc");
+			//判断是否有值
+			if (!StringUtils.isBlank(json)) {
+				//把json转换成java对象
+				TbItemDesc itemDesc = JsonUtils.jsonToPojo(json, TbItemDesc.class);
+				return TaotaoResult.ok(itemDesc);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//创建查询条件
+		TbItemDesc itemDesc = itemDescMapper.selectByPrimaryKey(itemId);
+		
+		try {
+			//把商品信息写入缓存
+			jedisClient.set(REDIS_ITEM_KEY + ":" + itemId + ":desc", JsonUtils.objectToJson(itemDesc));
+			//设置key的有效期
+			jedisClient.expire(REDIS_ITEM_KEY + ":" + itemId + ":desc", REDIS_ITEM_EXPIRE);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return TaotaoResult.ok(itemDesc);
 	}
 
 }

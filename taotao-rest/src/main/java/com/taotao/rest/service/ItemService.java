@@ -5,4 +5,5 @@ import com.taotao.result.TaotaoResult;
 public interface ItemService {
 
 	TaotaoResult getItemBaseInfo(long itemId);
+	TaotaoResult getItemDesc(long itemId);
 }
