@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.taotao.common.utils.ExceptionUtil;
+import com.taotao.pojo.TbUser;
 import com.taotao.result.TaotaoResult;
 import com.taotao.sso.service.UserService;
 
@@ -62,4 +63,17 @@ public class UserController {
 		}
 	}
 	
+	/**
+	 * 创建用户
+	 */
+	@RequestMapping("/register")
+	public TaotaoResult createUser(TbUser user) {
+		
+		try {
+			TaotaoResult result = userService.createUser(user);
+			return result;
+		} catch (Exception e) {
+			return TaotaoResult.build(500, ExceptionUtil.getStackTrace(e));
+		}
+	}
 }
