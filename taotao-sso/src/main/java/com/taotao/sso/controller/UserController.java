@@ -67,6 +67,7 @@ public class UserController {
 	 * 创建用户
 	 */
 	@RequestMapping("/register")
+	@ResponseBody
 	public TaotaoResult createUser(TbUser user) {
 		
 		try {
