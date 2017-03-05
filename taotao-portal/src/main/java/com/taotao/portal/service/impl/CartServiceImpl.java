@@ -100,5 +100,11 @@ public class CartServiceImpl implements CartService{
 		}
 		return new ArrayList<>();
 	}
+	
+	@Override
+	public List<CartItem> getCartItemList(HttpServletRequest request, HttpServletResponse response) {
+		List<CartItem> itemList = getCartItemList(request);
+		return itemList;
+	}
 
 }
