@@ -122,4 +122,21 @@ public class UserServiceImpl implements UserService {
 		return TaotaoResult.ok(JsonUtils.jsonToPojo(json, TbUser.class));
 	}
 
+	/**
+	 * 
+	 */
+	@Override
+	public TaotaoResult logoutByToken(String token) {
+		//根据token从redis中查询用户信息
+		String json = jedisClient.get(REDIS_USER_SESSION_KEY + ":" + token);
+		//判断是否为空
+		if (StringUtils.isBlank(json)) {
+			return TaotaoResult.build(400, "此session已经过期，请重新登录");
+		}
+		//删除redis中的key
+		jedisClient.del(REDIS_USER_SESSION_KEY + ":" + token);
+		//返回用户信息
+		return TaotaoResult.ok();
+	}
+
 }
