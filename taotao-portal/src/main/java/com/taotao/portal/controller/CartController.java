@@ -48,4 +48,9 @@ public class CartController {
 		return "cart";
 	}
 	
+	@RequestMapping("/delete/{itemId}")
+	public String deleteCartItem(@PathVariable Long itemId, HttpServletRequest request, HttpServletResponse response) {
+		cartService.deleteCartItem(itemId, request, response);
+		return "redirect:/cart/cart.html";
+	}
 }
