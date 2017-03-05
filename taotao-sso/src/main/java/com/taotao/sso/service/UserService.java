@@ -6,5 +6,6 @@ import com.taotao.result.TaotaoResult;
 public interface UserService {
 
 	TaotaoResult checkData(String content, Integer type);
-	public TaotaoResult createUser(TbUser user);
+	TaotaoResult createUser(TbUser user);
+	TaotaoResult userLogin(String username, String password);
 }
